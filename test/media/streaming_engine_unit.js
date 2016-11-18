@@ -797,9 +797,9 @@ describe('StreamingEngine', function() {
           expect(period).toBe(manifest.periods[1]);
 
           // Verify that all buffers have been cleared.
-          expect(mediaSourceEngine.clear).toHaveBeenCalledWith('audio');
-          expect(mediaSourceEngine.clear).toHaveBeenCalledWith('video');
-          expect(mediaSourceEngine.clear).toHaveBeenCalledWith('text');
+          expect(mediaSourceEngine.clear).toHaveBeenCalledWith('audio', false);
+          expect(mediaSourceEngine.clear).toHaveBeenCalledWith('video', false);
+          expect(mediaSourceEngine.clear).toHaveBeenCalledWith('text', false);
 
           // Verify buffers.
           expect(mediaSourceEngine.initSegments).toEqual({
@@ -876,9 +876,9 @@ describe('StreamingEngine', function() {
           expect(period).toBe(manifest.periods[0]);
 
           // Verify that all buffers have been cleared.
-          expect(mediaSourceEngine.clear).toHaveBeenCalledWith('audio');
-          expect(mediaSourceEngine.clear).toHaveBeenCalledWith('video');
-          expect(mediaSourceEngine.clear).toHaveBeenCalledWith('text');
+          expect(mediaSourceEngine.clear).toHaveBeenCalledWith('audio', false);
+          expect(mediaSourceEngine.clear).toHaveBeenCalledWith('video', false);
+          expect(mediaSourceEngine.clear).toHaveBeenCalledWith('text', false);
 
           onChooseStreams.and.callFake(function(period) {
             expect(period).toBe(manifest.periods[1]);
