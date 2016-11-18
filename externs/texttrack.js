@@ -27,15 +27,15 @@
 TextTrack.prototype.label;
 
 
-/** @type {string} */
+/** @type {string} */
 TextTrackCue.prototype.positionAlign;
 
 
-/** @type {string} */
+/** @type {string} */
 TextTrackCue.prototype.lineAlign;
 
 
-/** @type {number|null|string} */
+/** @type {number|null|string} */
 TextTrackCue.prototype.line;
 
 
@@ -43,5 +43,5 @@ TextTrackCue.prototype.line;
 TextTrackCue.prototype.vertical;
 
 
-/** @type {boolean} */
+/** @type {boolean} */
 TextTrackCue.prototype.snapToLines;
