@@ -77,7 +77,7 @@ describe('Player', function() {
       };
     }
 
-    video = createMockVideo();
+    video = createMockVideo(20);
     player = new shaka.Player(video, dependencyInjector);
 
     abrManager = new shaka.test.FakeAbrManager();

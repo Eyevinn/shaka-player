@@ -91,6 +91,7 @@ describe('DrmEngine', function() {
     var config = {
       retryParameters: shaka.net.NetworkingEngine.defaultRetryParameters(),
       clearKeys: {},
+      delayLicenseRequestUntilPlayed: false,
       advanced: {},
       servers: {
         'com.widevine.alpha':
@@ -123,7 +124,7 @@ describe('DrmEngine', function() {
       mediaSourceEngine.init({
         'video': 'video/mp4; codecs="avc1.640015"',
         'audio': 'audio/mp4; codecs="mp4a.40.2"'
-      }, false);
+      }, false, null);
       done();
     });
   });
