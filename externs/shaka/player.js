@@ -407,6 +407,23 @@ shakaExtern.EmsgInfo;
 
 
 /**
+ * @typedef {{
+ *   loadTime: ?number,
+ *   size: number,
+ *   duration: number
+ * }}
+ *
+ * @property {?number} loadTime
+ *   The load time in milliseconds
+ * @property {number} size
+ *   The fragment size in bytes
+ * @property {number} duration
+ *   The length of the segment in seconds
+ * @exportDoc
+ */
+shakaExtern.SegmentLoadedInfo;
+
+/**
  * @typedef {function(!Element):Array.<shakaExtern.DrmInfo>}
  * @see shakaExtern.DashManifestConfiguration
  * @exportDoc
