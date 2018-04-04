@@ -423,6 +423,25 @@ shakaExtern.EmsgInfo;
  */
 shakaExtern.SegmentLoadedInfo;
 
+
+/**
+ * @typedef {{
+ *   videoMimeType: string,
+ *   audioMimeType: string,
+ *   audioChannels: ?number
+ * }}
+ *
+ * @property {string} videoMimeType
+ *   MIME type for video track
+ * @property {string} audioMimeType
+ *   MIME type for audio track
+ * @property {?number} audioChannels
+ *   Nr of audio channels
+ * @exportDoc
+ */
+shakaExtern.SourceBufferInfo;
+
+
 /**
  * @typedef {function(!Element):Array.<shakaExtern.DrmInfo>}
  * @see shakaExtern.DashManifestConfiguration
