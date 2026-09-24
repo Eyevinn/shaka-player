@@ -289,4 +289,97 @@ describe('Mp4VttParser', () => {
   function verifyHelper(/** !Array */ expected, /** !Array */ actual) {
     expect(actual).toEqual(expected.map((c) => jasmine.objectContaining(c)));
   }
+
+  describe('paint-model wvtc', () => {
+    // The same livesim2 segment as wvtt and as wvtc: a cue, a vtte gap, then
+    // a new cue that the last sample restates with a vttn in wvtc.
+    const wvttInitUri = '/base/test/test/assets/vtt-chunked-init.mp4';
+    const wvttSegmentUri = '/base/test/test/assets/vtt-chunked-segment.mp4';
+    const wvtcInitUri = '/base/test/test/assets/paint-wvtc-init.mp4';
+    const wvtcSegmentUri = '/base/test/test/assets/paint-wvtc-segment.mp4';
+
+    /** @type {!Uint8Array} */
+    let wvttInit;
+    /** @type {!Uint8Array} */
+    let wvttSegment;
+    /** @type {!Uint8Array} */
+    let wvtcInit;
+    /** @type {!Uint8Array} */
+    let wvtcSegment;
+
+    const time = {
+      periodStart: 0,
+      segmentStart: 1790260814,
+      segmentEnd: 1790260816,
+      vttOffset: 0,
+      isMpegTs: false,
+    };
+
+    /**
+     * @param {!Uint8Array} init
+     * @param {!Uint8Array} segment
+     * @return {!Array<!shaka.text.Cue>}
+     */
+    const parse = (init, segment) => {
+      const parser = new shaka.text.Mp4VttParser();
+      parser.parseInit(init);
+      return parser.parseMedia(segment, time, null, []);
+    };
+
+    /**
+     * @param {!shaka.text.Cue} cue
+     * @return {!Object}
+     */
+    const summarize = (cue) => ({
+      startTime: cue.startTime,
+      endTime: cue.endTime,
+      payload: cue.payload,
+    });
+
+    beforeAll(async () => {
+      const responses = await Promise.all([
+        shaka.test.Util.fetch(wvttInitUri),
+        shaka.test.Util.fetch(wvttSegmentUri),
+        shaka.test.Util.fetch(wvtcInitUri),
+        shaka.test.Util.fetch(wvtcSegmentUri),
+      ]);
+      wvttInit = shaka.util.BufferUtils.toUint8(responses[0]);
+      wvttSegment = shaka.util.BufferUtils.toUint8(responses[1]);
+      wvtcInit = shaka.util.BufferUtils.toUint8(responses[2]);
+      wvtcSegment = shaka.util.BufferUtils.toUint8(responses[3]);
+    });
+
+    beforeEach(() => {
+      shaka.text.Mp4VttParser.resetParseStats();
+    });
+
+    it('registers the wvtc codec', () => {
+      expect(shaka.text.TextEngine.isTypeSupported(
+          'application/mp4; codecs="wvtc"')).toBe(true);
+    });
+
+    it('gives the same cues as the same segment sent as wvtt', () => {
+      const fromWvtt = parse(wvttInit, wvttSegment);
+      const fromWvtc = parse(wvtcInit, wvtcSegment);
+
+      expect(fromWvtt.length).toBe(3);
+      expect(fromWvtc.map(summarize)).toEqual(fromWvtt.map(summarize));
+    });
+
+    it('restates the vttn sample instead of parsing a cue box', () => {
+      parse(wvtcInit, wvtcSegment);
+      const stats = shaka.text.Mp4VttParser.getParseStats();
+
+      expect(stats['cueBoxesParsed']).toBe(2);
+      expect(stats['samplesRestated']).toBe(1);
+    });
+
+    it('treats a vttn in a wvtt track as an unknown box', () => {
+      // Only the paint-model sample entry gives vttn its meaning.
+      parse(wvttInit, wvtcSegment);
+      const stats = shaka.text.Mp4VttParser.getParseStats();
+
+      expect(stats['samplesRestated']).toBe(0);
+    });
+  });
 });

@@ -635,5 +635,12 @@ vaage
 webapis
 WHATWG
 
+# experimental paint-model subtitle 4CCs
+stpc
+ttmb
+ttmn
+vttn
+wvtc
+
 # banned words
 !timmer
